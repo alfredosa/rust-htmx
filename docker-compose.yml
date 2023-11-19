@@ -1,0 +1,47 @@
+version: "3"
+services:
+  rust:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      # - redis
+      # - mail
+
+  db:
+    image: postgres:latest
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5433:5432"
+
+  # redis:
+  #   image: redis:6.2.6
+  #   volumes:
+  #     - redis_data:/data
+  #   ports:
+  #     - "6379:6379"
+
+  # mail:
+  #   image: bytemark/smtp
+  #   restart: always
+  #   environment:
+  #     RELAY_HOST: smtp.example.com
+  #     RELAY_PORT: 587
+  #     RELAY_USERNAME: alice@example.com
+  #     RELAY_PASSWORD: secretpassword
+  #     RELAY_AUTH_METHOD: LOGIN
+
+volumes:
+  redis_data:
+    driver: local
+  db_data:
+    driver: local
