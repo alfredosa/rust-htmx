@@ -1,11 +1,24 @@
-FROM rust:latest as builder
 
-WORKDIR /usr/src/app
+FROM rust:latest as build
+
+
+WORKDIR /usr/src/rust-htmx
+
 COPY . .
 
-RUN rustup target add x86_64-unknown-linux-musl
+COPY .env.docker .env
+RUN apt-get update && apt-get install libpq5 -y
 
-RUN apt-get update && apt-get install -y musl-tools
+RUN cargo install --path .
 
-RUN cargo build --release 
-RUN /usr/src/app/target/release/rust-htmx
+
+FROM gcr.io/distroless/cc-debian11
+ARG ARCH=aarch64
+# Application files
+
+COPY --from=build /usr/local/cargo/bin/rust-htmx /usr/local/bin/rust-htmx
+
+COPY --from=build /usr/src/rust-htmx/.env /.env
+
+
+CMD ["rust-htmx"]
