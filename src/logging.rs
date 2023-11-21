@@ -8,5 +8,5 @@ pub fn log_printer(severity: &str, message: &str, line: u32, file: &str) {
         _ => "INFO".to_string().green().bold(),
     };
 
-    println!("{} {}, {}: {}", log_severity, message, line, file);
+    println!("line {}: {}. {} {} ", line, file, log_severity, message,);
 }
