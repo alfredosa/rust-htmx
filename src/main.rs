@@ -2,13 +2,12 @@ mod handlers;
 mod config;
 mod logging;
 mod models;
-mod schema;
 
 use actix_web::{web, App, HttpServer, middleware::Logger};
 use handlers::{index::index, app_config};
 use color_eyre::Result;
 use config::*;
-use diesel::{Connection, PgConnection};
+
 use tracing::info;
 
 // pub fn connect_db() -> PgConnection {

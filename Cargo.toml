@@ -9,16 +9,23 @@ edition = "2021"
 actix = "0.13.1"
 actix-rt = "2.9.0"
 actix-web = "4.4.0"
+argonautica = { version = "0.2.0", features = ["simd"] }
+chrono = { version = "0.4.31", features = ["serde"] }
 color-eyre = "0.6.2"
 colored = "2.0.4"
 config = "0.13.3"
-diesel = { version = "2.1.4", features = ["postgres"] }
 dotenvy = "0.15.7"
 eyre = "0.6.9"
+futures = { version = "0.3.29", features = ["compat"] }
+jsonwebtoken = "9.1.0"
 rand = "0.8.5"
 redis = "0.23.3"
 serde = { version = "1.0.192", features = ["derive"] }
+sqlx = { version = "0.7.2", features = ["runtime-tokio", "macros", "postgres", "uuid", "chrono"] }
 tracing = "0.1.40"
 tracing-futures = "0.2.5"
 tracing-log = "0.2.0"
 tracing-subscriber = "0.3.18"
+uuid = { version = "1.6.1", features = ["serde"] }
+validator = "0.16.1"
+validator_derive = "0.16.0"
