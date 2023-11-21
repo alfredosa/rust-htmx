@@ -1,32 +1,35 @@
-mod api;
+mod handlers;
+mod config;
 mod logging;
 mod models;
 mod schema;
 
-use actix_web::{web, App, HttpServer};
-use api::index::index;
+use actix_web::{web, App, HttpServer, middleware::Logger};
+use handlers::{index::index, app_config};
+use color_eyre::Result;
+use config::*;
 use diesel::{Connection, PgConnection};
-use dotenvy::dotenv;
-use std::env;
+use tracing::info;
 
-pub fn connect_db() -> PgConnection {
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    PgConnection::establish(&database_url)
-        .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
-}
-#[actix_web::main]
-async fn main() -> std::io::Result<()> {
-    dotenv().ok();
+// pub fn connect_db() -> PgConnection {
+//     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+//     PgConnection::establish(&database_url)
+//         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
+// }
 
-    let _database = connect_db();
+#[actix_rt::main]
+async fn main() -> Result<()> {
+    let config = Config::from_env().expect("Server Configuration");
 
-    HttpServer::new(|| {
-        App::new()
-            .wrap(actix_web::middleware::Logger::default())
-            .wrap(actix_web::middleware::Compress::default())
-            .service(web::resource("/").route(web::get().to(index)))
-    })
-    .bind(("127.0.0.1", 8080))?
-    .run()
-    .await
+    info!("Starting Server at http://{}:{}", config.host, config.port);
+
+    HttpServer::new(move || App::new()
+        .wrap(Logger::default())
+        .configure(app_config)
+        .service(web::resource("/").route(web::get().to(index))))
+        .bind(format!("{}:{}", config.host, config.port))?
+        .run()
+        .await?;
+
+    Ok(())
 }
