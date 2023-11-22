@@ -18,7 +18,7 @@ impl Config {
 
         info!("Loading configuration");
 
-        let mut cfg =
+        let cfg =
             config::Config::builder().add_source(config::Environment::default().try_parsing(true));
 
         match cfg.build() {
