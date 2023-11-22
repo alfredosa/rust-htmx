@@ -1,13 +1,14 @@
-use uuid::Uuid;
 use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use sqlx::FromRow;
+use uuid::Uuid;
 
 #[derive(Debug, FromRow, Deserialize, Serialize)]
 pub struct User {
     pub id: Uuid,
     pub username: String,
     pub email: String,
+    #[serde(skip_serializing)]
     pub password_hash: String,
     pub full_name: Option<String>,
     pub bio: Option<String>,
@@ -33,4 +34,3 @@ pub struct UpdateProfile {
     #[validate(url)]
     pub image: Option<String>,
 }
-
